@@ -2,6 +2,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0f172a"><link rel="manifest" href="manifest.json">
 <title>호주 7일 여행</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f5f7;color:#111827;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;padding-bottom:75px}
 header{background:#0f172a;color:white;padding:20px 16px;position:sticky;top:0;z-index:10}h1{margin:0;font-size:22px}.sub{font-size:12px;color:#cbd5e1;margin-top:4px}
@@ -20,6 +21,8 @@ nav{position:fixed;bottom:0;left:0;right:0;height:70px;background:#fff;border-to
 input.search{width:100%;padding:11px;border:1px solid #ddd;border-radius:10px}
 
 .route{margin:12px 0}.routebox{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:14px}.routehead{display:flex;justify-content:space-between;align-items:center;gap:8px}.routehead h3{margin:0}.routebtn{display:inline-block;text-decoration:none;background:#111827;color:#fff;padding:9px 12px;border-radius:10px;font-weight:700;font-size:12px}.route-line{position:relative;margin:14px 0 4px;padding-left:24px}.route-line:before{content:"";position:absolute;left:8px;top:7px;bottom:7px;width:2px;background:#cbd5e1}.stop{position:relative;margin:0 0 13px}.stop:last-child{margin-bottom:0}.dot{position:absolute;left:-21px;top:2px;width:12px;height:12px;border-radius:50%;background:#111827;border:2px solid #fff;box-shadow:0 0 0 1px #94a3b8}.stop b{font-size:13px}.stop small{display:block;color:#64748b;margin-top:3px}.recs{display:grid;grid-template-columns:1fr;gap:9px}.rec{display:flex;gap:10px;padding:11px;border:1px solid #e5e7eb;border-radius:12px;background:#fff}.rec .emoji{font-size:24px}.rec h4{margin:0 0 3px;font-size:14px}.rec p{margin:0;color:#64748b;font-size:12px;line-height:1.45}.rec a{display:inline-block;margin-top:7px;font-size:11px;font-weight:700;color:#111827;text-decoration:none}.tag{display:inline-block;background:#f1f5f9;color:#475569;border-radius:999px;padding:3px 7px;font-size:10px;margin-right:4px}.note{font-size:11px;color:#64748b;line-height:1.5}
+.ph{margin-top:8px;height:150px;border-radius:12px;overflow:hidden;background:#e2e8f0}.ph.loading{background:linear-gradient(90deg,#e2e8f0,#f1f5f9,#e2e8f0);background-size:200% 100%;animation:sh 1.2s infinite linear}.ph img{width:100%;height:100%;object-fit:cover;display:block}@keyframes sh{to{background-position:-200% 0}}
+.rmap{position:relative;isolation:isolate;z-index:0;height:230px;border-radius:12px;overflow:hidden;margin-top:12px;background:#e2e8f0}.rmap.loading{background:linear-gradient(90deg,#e2e8f0,#f1f5f9,#e2e8f0);background-size:200% 100%;animation:sh 1.2s infinite linear}.leaflet-container{font:inherit}.pinw{background:none;border:0}.pin{background:#111827;color:#fff;border:2px solid #fff;border-radius:50%;width:22px;height:22px;text-align:center;font:700 11px/18px system-ui;box-shadow:0 1px 4px #0006}.rsum{margin-top:10px;background:#eff6ff;color:#1e3a8a;border-radius:10px;padding:9px 11px;font-size:12px;font-weight:700;line-height:1.5}.rsum:empty{display:none}
 </style></head><body>
 <header><h1>🇦🇺 호주 7일 여행</h1><div class="sub">2026.10.11 ~ 10.17 · Sydney → Gold Coast → Brisbane</div><div id="clock">호주 현지시간 --:--:--</div></header>
 <main>
@@ -84,11 +87,65 @@ const RECS=[
   ]
 ];
 
+const PH={
+"인천(ICN) 출발":["Incheon International Airport"],
+"시드니(SYD) 도착":["Sydney Airport"],
+"블루마운틴 국립공원":["Blue Mountains National Park"],
+"에코 포인트":["Echo Point","Echo Point Katoomba lookout"],
+"세 자매봉":["Three Sisters (New South Wales)"],
+"시닉 케이블웨이":["Scenic Skyway","Scenic Skyway Katoomba"],
+"시닉 레일웨이":["Katoomba Scenic Railway","Scenic Railway Katoomba"],
+"시닉 워크웨이":["Scenic World","Scenic World Katoomba"],
+"로라 마을":["Leura, New South Wales"],
+"파크로얄 파라마타":["Parramatta"],
+"포트스테판 자연체험":["Worimi Conservation Lands","Stockton Beach sand dunes"],
+"돌핀 크루즈":["Common bottlenose dolphin"],
+"머레이 와이너리":["Murray's Brewery Port Stephens","Murray's Brewery Port Stephens"],
+"하이드 파크":["Hyde Park, Sydney"],
+"세인트 메리 대성당":["St Mary's Cathedral, Sydney"],
+"시드니 오페라 하우스":["Sydney Opera House"],
+"시드니 하버 브릿지":["Sydney Harbour Bridge"],
+"시드니 천문대 공원":["Sydney Observatory"],
+"더 록스":["The Rocks, New South Wales"],
+"시드니 야경 투어":["Sydney Harbour"],
+"포인트 데인저":["Point Danger"],
+"열대과일 농장":["Tropical Fruit World"],
+"서퍼스 파라다이스":["Surfers Paradise, Queensland"],
+"마리나 미라지":["Marina Mirage","Marina Mirage Main Beach Gold Coast"],
+"골드코스트 헬기투어":["Gold Coast, Queensland"],
+"스카이포인트":["Q1 (building)","SkyPoint Observation Deck Gold Coast"],
+"보코 골드코스트":["Surfers Paradise, Queensland"],
+"커럼빈 야생동물 보호구역":["Currumbin Wildlife Sanctuary"],
+"동물 체험":["Koala"],
+"브리즈번(BNE) 출발":["Brisbane Airport"],
+"서울(ICN) 도착":["Incheon International Airport"]
+};
+const PHC=(()=>{try{return JSON.parse(localStorage.getItem("phc")||"{}")}catch(e){return{}}})(),PHP={};
+function wp(q){return fetch("https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=800&"+q).then(r=>r.json())}
+async function findPhoto(t,s){
+try{let d=await wp("titles="+encodeURIComponent(t)),p=Object.values((d.query||{}).pages||{})[0];if(p&&p.thumbnail)return p.thumbnail.source}catch(e){}
+try{let d=await wp("generator=search&gsrlimit=5&gsrsearch="+encodeURIComponent(s)),ps=Object.values((d.query||{}).pages||{}).filter(p=>p.thumbnail).sort((a,b)=>a.index-b.index);if(ps[0])return ps[0].thumbnail.source}catch(e){}
+return null}
+function getPhoto(k){if(PHC[k])return Promise.resolve(PHC[k]);if(!PHP[k]){let [t,s]=PH[k];PHP[k]=findPhoto(t,s||t).then(u=>{if(u){PHC[k]=u;try{localStorage.setItem("phc",JSON.stringify(PHC))}catch(e){}}return u})}return PHP[k]}
+function hydratePhotos(){document.querySelectorAll(".ph[data-k]:not([data-d])").forEach(el=>{el.dataset.d=1;getPhoto(el.dataset.k).then(u=>{if(!u){el.remove();return}let im=new Image();im.alt=el.dataset.k;im.onload=()=>{el.classList.remove("loading");el.appendChild(im)};im.onerror=()=>el.remove();im.src=u})})}
+const XY={"Sydney Airport":[-33.9461,151.1772],"PARKROYAL Parramatta":[-33.8138,151.0060],"Blue Mountains National Park":[-33.7148,150.3117],"Echo Point, Katoomba NSW":[-33.7320,150.3118],"Scenic World, Katoomba NSW":[-33.7287,150.3000],"Leura NSW":[-33.7143,150.3367],"Port Stephens NSW":[-32.7800,152.0880],"Nelson Bay NSW":[-32.7167,152.1450],"Murray's Brewery Port Stephens":[-32.7840,152.0210],"Hyde Park Sydney":[-33.8731,151.2111],"St Mary's Cathedral Sydney":[-33.8711,151.2132],"Sydney Opera House":[-33.8568,151.2153],"Sydney Harbour Bridge":[-33.8523,151.2108],"Sydney Observatory":[-33.8587,151.2047],"The Rocks Sydney":[-33.8599,151.2090],"Point Danger Coolangatta":[-28.1673,153.5518],"Tropical Fruit World":[-28.3348,153.4121],"Surfers Paradise QLD":[-28.0023,153.4296],"Marina Mirage Gold Coast":[-27.9672,153.4291],"Gold Coast":[-28.0167,153.4000],"SkyPoint Gold Coast":[-28.0063,153.4300],"voco Gold Coast":[-28.0055,153.4306],"Currumbin Wildlife Sanctuary":[-28.1362,153.4812],"Brisbane Airport":[-27.3942,153.1218]};
+const FOOT=new Set([3]);
+const RTC=(()=>{try{return JSON.parse(localStorage.getItem("rtc2")||"{}")}catch(e){return{}}})(),RTP={};
+function loadRoute(i){if(RTC[i])return Promise.resolve(RTC[i]);if(!RTP[i]){let c=ROUTES[i].stops.map(x=>XY[x]).filter(Boolean),foot=FOOT.has(+i),co=c.map(a=>a[1]+","+a[0]).join(";"),u=(foot?"https://routing.openstreetmap.de/routed-foot/route/v1/foot/":"https://router.project-osrm.org/route/v1/driving/")+co+"?overview=full&geometries=geojson";RTP[i]=fetch(u).then(r=>r.json()).then(d=>{let r=d.routes[0],o={foot,dist:r.distance,dur:r.duration,legs:r.legs.map(l=>[l.distance,l.duration]),line:r.geometry.coordinates.map(a=>[+a[1].toFixed(5),+a[0].toFixed(5)])};RTC[i]=o;try{localStorage.setItem("rtc2",JSON.stringify(RTC))}catch(e){}return o}).catch(()=>null)}return RTP[i]}
+const km=m=>m<1000?Math.round(m/10)*10+"m":(m/1000).toFixed(m<10000?1:0)+"km";
+const mins=s=>{let m=Math.max(1,Math.round(s/60));return m<60?m+"분":Math.floor(m/60)+"시간"+(m%60?" "+m%60+"분":"")};
+function hydrateMaps(){document.querySelectorAll(".rmap:not([data-d])").forEach(el=>{if(!el.offsetWidth)return;el.dataset.d=1;let i=el.dataset.i,pts=ROUTES[i].stops.map(x=>XY[x]).filter(Boolean),box=el.closest(".routebox");
+let m=null;if(window.L){m=L.map(el,{zoomControl:false,dragging:false,touchZoom:false,doubleClickZoom:false,scrollWheelZoom:false,boxZoom:false,keyboard:false,tap:false});L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(m);el._m=m;m.fitBounds(pts,{padding:[26,26]});pts.forEach((a,k)=>L.marker(a,{icon:L.divIcon({className:"pinw",html:`<div class="pin">${k+1}</div>`,iconSize:[22,22],iconAnchor:[11,11]}),interactive:false}).addTo(m))}
+loadRoute(i).then(r=>{el.classList.remove("loading");if(!r){if(m)L.polyline(pts,{color:"#2563eb",weight:3,dashArray:"6 6"}).addTo(m);let sm=box.querySelector(".rsum");if(sm)sm.textContent="실제 도로 경로를 불러오지 못해 직선으로 표시했어요. 아래 'Google 지도에서 경로'를 이용하세요.";return}
+if(m){let pl=L.polyline(r.line,{color:"#2563eb",weight:5,opacity:.85}).addTo(m);m.fitBounds(pl.getBounds(),{padding:[26,26]})}
+box.querySelector(".rsum").textContent=`총 ${km(r.dist)} · ${r.foot?"도보":"차량"} 약 ${mins(r.dur)} (예상, 교통·정차 제외)`;
+box.querySelectorAll(".leg").forEach(x=>{let l=r.legs[+x.dataset.l];if(l)x.textContent=`↓ ${km(l[0])} · ${r.foot?"도보":"차량"} 약 ${mins(l[1])}`})})})}
+function mapToggle(b){let m=b.closest(".routebox").querySelector(".rmap")._m;if(!m)return;let on=b.dataset.on!=="1";b.dataset.on=on?"1":"0";["dragging","touchZoom","doubleClickZoom"].forEach(h=>on?m[h].enable():m[h].disable());b.textContent=on?"🔒 지도 고정":"🔍 지도 확대/이동"}
 const map=q=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 function dayIndex(){let k=new Intl.DateTimeFormat("en-CA",{timeZone:"Australia/Sydney",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());let i=D.findIndex(x=>x[1]===k.slice(5).replace("-","/"));return i<0?0:i}
-function eventHTML(s){let [t,n,d,q]=s.split("|");return `<div class="event"><div class="time">${t||"일정"}</div><h3>${n}</h3><p>${d}</p>${q?`<a class="btn" target="_blank" href="${map(q)}">🗺️ 지도</a>`:""}</div>`}
+function eventHTML(s){let [t,n,d,q]=s.split("|"),k=n.replace(/^[^가-힣A-Za-z]+/,"");return `<div class="event"><div class="time">${t||"일정"}</div><h3>${n}</h3><p>${d}</p>${PH[k]?`<div class="ph loading" data-k="${k}"></div>`:""}${q?`<a class="btn" target="_blank" href="${map(q)}">🗺️ 지도</a>`:""}</div>`}
 function schedule(i=dayIndex()){let route=ROUTES[i],recs=RECS[i];document.getElementById("schedule").innerHTML=`<div class="pills">${D.map((x,j)=>`<button class="pill ${i==j?"active":""}" onclick="schedule(${j})">${j+1}일차</button>`).join("")}</div><div class="hero"><div class="label">DAY ${i+1}</div><h2>${D[i][0]}</h2><div class="muted">${D[i][1]}</div></div><div class="card"><h3>🗺️ 오늘 이동 코스</h3>${routeCard(route)}</div><div class="card"><h3>📋 패키지 일정</h3>${D[i][2].map(eventHTML).join("")}</div><div class="card"><h3>📍 일정 주변 추천</h3><div class="recs">${recs.map(recHTML).join("")}</div><p class="note">추천 장소는 패키지 일정에 포함되지 않을 수 있습니다. 실제 방문 가능 여부는 당일 자유시간·교통·영업시간을 확인하세요.</p></div>`}
-function routeCard(r){let directions=`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(r.from)}&destination=${encodeURIComponent(r.to)}&waypoints=${r.stops.slice(1,-1).map(encodeURIComponent).join("|")}&travelmode=driving`;return `<div class="routebox"><div class="routehead"><h3>${r.title}</h3><a class="routebtn" target="_blank" href="${directions}">Google 지도에서 경로</a></div><div class="route-line">${r.stops.map((x,i)=>`<div class="stop"><span class="dot"></span><b>${i+1}. ${x}</b>${i<r.stops.length-1?`<small>↓ 다음 일정지로 이동</small>`:"<small>도착</small>"}</div>`).join("")}</div><p class="note">${r.note}</p></div>`}
+function routeCard(r){let directions=`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(r.from)}&destination=${encodeURIComponent(r.to)}&waypoints=${r.stops.slice(1,-1).map(encodeURIComponent).join("|")}&travelmode=driving`;return `<div class="routebox"><div class="routehead"><h3>${r.title}</h3><a class="routebtn" target="_blank" href="${directions}">Google 지도에서 경로</a></div><div class="rmap loading" data-i="${ROUTES.indexOf(r)}"></div><div class="rsum"></div><button class="btn" onclick="mapToggle(this)">🔍 지도 확대/이동</button><div class="route-line">${r.stops.map((x,i)=>`<div class="stop"><span class="dot"></span><b>${i+1}. ${x}</b>${i<r.stops.length-1?`<small class="leg" data-l="${i}">↓ 다음 일정지로 이동</small>`:"<small>도착</small>"}</div>`).join("")}</div><p class="note">${r.note}</p></div>`}
 function recHTML(r){return `<div class="rec"><div class="emoji">${r[0]}</div><div><h4>${r[1]}</h4><span class="tag">${r[3]}</span><p>${r[2]}</p><a target="_blank" href="${map(r[4])}">📍 지도에서 보기</a></div></div>`}
 async function weather(id){let el=document.getElementById(id);try{let L=[["시드니",-33.8688,151.2093],["블루마운틴",-33.7148,150.3117],["골드코스트",-28.0167,153.4]],di=dayIndex();let a=await Promise.all(L.map(x=>fetch(`https://api.open-meteo.com/v1/forecast?latitude=${x[1]}&longitude=${x[2]}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&start_date=2026-10-11&end_date=2026-10-17`).then(r=>r.json()).then(d=>[x[0],d])));el.innerHTML='<div class="weather">'+a.map(([n,d])=>{let k=Math.min(di,d.daily.time.length-1);return `<div class="w"><b>${n}</b><div class="temp">${Math.round(d.daily.temperature_2m_max[k])}°</div><small>최저 ${Math.round(d.daily.temperature_2m_min[k])}°<br>강수 ${d.daily.precipitation_probability_max[k]??"-"}%</small></div>`}).join("")+'</div><small>예보: Open-Meteo. 출발 전 최신 예보 재확인.</small>'}catch(e){el.textContent="날씨를 불러오지 못했습니다."}}
 function home(){let i=dayIndex(),x=D[i];document.getElementById("home").innerHTML=`<div class="hero"><div class="label">TODAY · DAY ${i+1}</div><h2>${x[0]}</h2><div class="muted">${x[1]} · ${x[2].length}개 일정</div><button class="btn primary" onclick="show('schedule')">오늘 일정 보기</button><button class="btn" onclick="show('map')">오늘 지도</button></div><div class="grid"><div class="mini"><small>여행 기간</small><b>7일</b></div><div class="mini"><small>현재 지역</small><b>${i<5?"Sydney":"Gold Coast"}</b></div></div><div class="card">${x[2].slice(0,6).map(eventHTML).join("")}</div><div class="section-title"></div><div class="card"><h3>🌤 오늘 날씨</h3><div id="hw">불러오는 중…</div></div><div class="alert">패키지 실제 시간·호텔·식사·선택관광은 현지 사정에 따라 변경될 수 있습니다. 하나투어 최종 안내를 우선하세요.</div>`;weather("hw")}
@@ -98,6 +155,7 @@ function info(){document.getElementById("info").innerHTML=`<div class="hero"><di
 function save(){document.querySelectorAll("[id^=c]").forEach(x=>localStorage.setItem(x.id,x.checked?"1":"0"))}
 function show(v){document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));document.getElementById(v).classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.v===v));if(v==="schedule")schedule();if(v==="map")mapView();if(v==="weather"){document.getElementById("weather").innerHTML='<div class="hero"><h2>🌤️ 현지 날씨</h2><p>10/11~10/17 예보</p></div><div class="card" id="wm">불러오는 중…</div>';weather("wm")}if(v==="info")info();scrollTo(0,0)}
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>show(b.dataset.v));
+{const _s=schedule,_h=home,_d=mapDay;schedule=function(i){_s(i);hydratePhotos();hydrateMaps()};home=function(){_h();hydratePhotos()};mapDay=function(i){_d(i);hydrateMaps()}}
 home();schedule();mapView();info();
 setInterval(()=>document.getElementById("clock").textContent="호주 시드니 현지시간 "+new Date().toLocaleTimeString("ko-KR",{hour12:false,timeZone:"Australia/Sydney"}),1000);
 </script></body></html>
