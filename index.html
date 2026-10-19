@@ -27,6 +27,7 @@ input.search{width:100%;padding:11px;border:1px solid #ddd;border-radius:10px}
 .strip{display:flex;gap:6px;overflow:auto;padding:2px 0 6px}.sd{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:8px 9px;min-width:62px;text-align:center;display:flex;flex-direction:column;gap:1px;font-size:12px}.sd.on{background:#0f172a;color:#fff}.sd.on small{color:#cbd5e1}.sd span{font-size:20px}.pal{display:flex;align-items:center;gap:6px;font-size:12px;color:#475569;margin:6px 0}.pal i{display:inline-block;width:18px;height:18px;border-radius:50%;border:1px solid #cbd5e1}.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.chips span{background:#eff6ff;color:#1e3a8a;border-radius:20px;padding:5px 9px;font-size:12px;font-weight:700}.who{border-top:1px solid #eee;padding:11px 0}.who:first-of-type{border-top:0}.wh{display:flex;flex-direction:column;gap:2px;margin-bottom:5px}.wh b{font-size:15px}.wh span{font-size:12px;color:#2563eb;font-weight:700}.who ul{margin:4px 0;padding-left:0;list-style:none;font-size:13px;line-height:1.7}.who small{display:block;line-height:1.5}.pk{font-size:13px;margin:7px 0;line-height:1.5}.nt{font-size:12px;line-height:1.7;margin:3px 0}
 #gear{position:absolute;right:14px;top:16px;border:0;background:#ffffff1f;color:#fff;border-radius:12px;font-size:18px;padding:8px 10px}#setov{display:none;position:fixed;inset:0;background:#0008;z-index:50;align-items:center;justify-content:center;padding:16px}.sheet{background:#fff;border-radius:16px;padding:16px;max-width:360px;width:100%}.sheet h3{margin:0 0 6px}.sheet input{width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;margin-top:6px;font-size:16px}.row{display:flex;gap:6px;flex-wrap:wrap}
 .fig{display:flex;justify-content:center;margin:6px 0}.fig svg{width:130px;height:auto}.eg{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:2px 0 8px}.eg .btn{margin-top:0;text-decoration:none;color:#111827}
+.vp{margin:6px 0;padding:8px 10px;border-radius:10px;background:#fff7ed;color:#9a3412;font-size:12px;line-height:1.5}.leg{display:block;margin:0 0 6px;padding:5px 9px;border-radius:20px;background:#eff6ff;color:#1e3a8a;font-size:11px;font-weight:700}.leg:empty{display:none}.near{margin-top:8px;background:#f8fafc;border-radius:10px;padding:2px 10px}.near summary{cursor:pointer;font-weight:700;font-size:13px;padding:8px 0}.nr{display:flex;gap:8px;padding:8px 0;border-top:1px solid #e5e7eb}.nr .e{font-size:20px}.nr b{font-size:13px}.nr p{margin:2px 0;font-size:12px;line-height:1.5;color:#475569}.nr a{font-size:12px;font-weight:700}.rpin{background:#fff;border:2px solid #f97316;border-radius:50%;width:26px;height:26px;text-align:center;font-size:14px;line-height:22px;box-shadow:0 1px 4px #0006}.rpin.s{border-color:#16a34a}
 </style></head><body>
 <header><h1>🇦🇺 호주 7일 여행</h1><button id="gear" onclick="openSet()" aria-label="일정 설정">⚙️</button><div class="sub" id="tsub"></div><div id="clock">호주 현지시간 --:--:--</div></header>
 <main>
@@ -60,40 +61,56 @@ const ROUTES=[
   {title:"골드코스트 → 브리즈번 공항 → 인천",from:"Rydges Gold Coast Airport",to:"Brisbane Airport",stops:["Rydges Gold Coast Airport","Brisbane Airport"],note:"08:40 KE0408 출발 일정이므로 공항 이동시간은 하나투어 최종 안내를 우선하세요."}
 ];
 
-const RECS=[
-  [
-    ["🌿","Royal Botanic Garden Sydney","시드니 도착 후 시간이 남을 때 가볍게 산책하기 좋은 대표 명소","관광","Mrs Macquaries Rd, Sydney NSW 2000"],
-    ["🍽️","Bennelong","오페라하우스 안에서 호주식 식사를 경험하고 싶을 때. 예약 여부와 운영시간 확인 권장","현지 맛집","Sydney Opera House"],
-    ["🍽️","Opera Bar","오페라하우스 주변에서 간단히 식사·음료를 즐기기 좋은 선택지","현지 맛집","Sydney Opera House, Lower Concourse"]
-  ],
-  [
-    ["🏞️","Katoomba Falls","Echo Point/Scenic World와 함께 묶기 좋은 블루마운틴 전망 포인트","관광","Katoomba NSW 2780"],
-    ["🍽️","Bowery","카툼바에서 식사하기 좋은 현대식 레스토랑","현지 맛집","56-64 Waratah St, Katoomba"],
-    ["🍕","Rustico","카툼바 중심가에서 간단하게 피자·식사를 원할 때","현지 맛집","4 Katoomba St, Katoomba"]
-  ],
-  [
-    ["🌊","Gan Gan Lookout","넬슨베이와 포트스테판 전경을 한눈에 볼 수 있는 전망대","관광","Lily Hill Rd, Nelson Bay"],
-    ["🐠","Little Beach Reserve","시간이 남을 경우 들르기 좋은 해변·수변 명소","관광","1111 Beach Rd, Nelson Bay"],
-    ["🍽️","Little Beach Boathouse","현지 해산물과 수변 경관을 함께 즐기기 좋은 레스토랑","현지 맛집","4 Victoria Parade, Nelson Bay"]
-  ],
-  [
-    ["🌳","Royal Botanic Garden Sydney","오페라하우스·하버 주변 일정과 연결하기 좋은 산책 코스","관광","Mrs Macquaries Rd, Sydney"],
-    ["🌉","Sydney Harbour Bridge","더 록스와 연결해 하버 전망을 보기 좋은 대표 명소","관광","Sydney Harbour Bridge"],
-    ["🍽️","6HEAD Sydney","The Rocks/서큘러키 인근의 고급 호주식 레스토랑","현지 맛집","7-27 Circular Quay W, The Rocks"]
-  ],
-  [
-    ["🏖️","Surfers Paradise Beach","숙소·서퍼스 파라다이스 일정 사이에 잠깐 들르기 좋은 대표 해변","관광","Surfers Paradise QLD"],
-    ["🔭","SkyPoint","당일 일정에 이미 포함되어 있으므로 전망시간이 충분한지 확인 후 이용","관광","Q1 Building, Surfers Paradise"],
-    ["🦐","Kickin'Inn Surfers Paradise","해산물 위주의 캐주얼 식사를 원할 때 선택하기 좋은 곳","현지 맛집","Chevron Renaissance, Surfers Paradise"]
-  ],
-  [
-    ["🏖️","Currumbin Beach","커럼빈 일정 전후로 가볍게 걷기 좋은 가까운 해변","관광","Currumbin Beach, Queensland"],
-    ["🍽️","Burleigh Pavilion","버레이 헤즈 해변가의 인기 식당. 예약 여부와 운영시간 확인 권장","현지 맛집","Goodwin Terrace, Burleigh Heads"]
-  ],
-  [
-    ["🏖️","Bilinga Beach","호텔 근처 해변. 이른 아침 출발이라 시간이 있다면 짧게 산책만","관광","Bilinga Beach, Queensland"]
-  ]
+const NR=[
+{},
+{"에코 포인트":[["🥞","Bowery","카툼바 시내의 인기 브런치·카페(옛 교회 건물을 개조). 영업시간과 예약 확인 권장","맛집","56-64 Waratah St, Katoomba NSW"]],
+"시닉 스카이웨이":[["💧","Katoomba Falls","시닉월드 바로 옆 폭포 전망 포인트. 짧은 산책으로 이어져요","관광","Katoomba Falls, Katoomba NSW"]],
+"로라 마을":[["🍫","Josophan's Fine Chocolates","로라 몰의 수제 초콜릿·아이스크림 가게. 디저트 간식 코스로 좋아요","맛집","187 Leura Mall, Leura NSW"],["💦","Leura Cascades (Leura Falls)","로라 인근 폭포 산책지. 오르내림이 있으니 체력에 맞춰 가까운 구간만","관광","Leura Cascades, Leura NSW"]]},
+{"돌핀 크루즈":[["🍤","Little Beach Boathouse","넬슨 베이 수변의 해산물 레스토랑. 화~일요일 영업, 예약 권장","맛집","4 Victoria Parade, Nelson Bay NSW"],["🐟","Bay Harbour Cafe","바닷가 피시앤칩스 카페. 가볍게 먹기 좋은 캐주얼 식당","맛집","Teramby Rd, Nelson Bay NSW"],["🌄","Gan Gan Lookout","차로 올라가 짧게 걸으면 되는 전망대. 넬슨 베이·포트스티븐스 전경이 한눈에","관광","Lily Hill Rd, Nelson Bay NSW"],["⛰️","Tomaree Head Summit Walk","약 45분 오르막 전망 트레일. 체력과 시간이 넉넉할 때만 추천","관광","Shoal Bay Rd, Shoal Bay NSW"]]},
+{"하이드 파크":[["🏛️","Queen Victoria Building (QVB)","하이드 파크에서 걸어갈 수 있는 빅토리아풍 쇼핑 아케이드. 실내라 비 올 때도 좋아요","관광","429 George St, Sydney NSW"]],
+"오페라 하우스":[["🍹","Opera Bar","오페라하우스 바로 앞 야외 바. 하버 뷰를 보며 가벼운 식사·음료(카운터 주문, 대기 있음)","맛집","Sydney Opera House Lower Concourse"],["🌅","Mrs Macquarie's Chair","오페라하우스와 하버브리지를 한 프레임에 담는 대표 포토 포인트. 바람이 센 편","관광","Mrs Macquaries Rd, Sydney NSW"]],
+"더 록스":[["🍺","Fortune of War","1828년에 지어진 시드니에서 가장 오래된 펍. 가벼운 식사·음료","맛집","137 George St, The Rocks NSW"],["🌿","Barangaroo Reserve","더 록스에서 하버를 따라 걸어갈 수 있는 해안 공원. 사암 해안과 하버 전망","관광","Barangaroo Reserve, Barangaroo NSW"]]},
+{"서퍼스 파라다이스":[["🦐","Kickin'Inn Surfers Paradise","시푸드 보일 전문 캐주얼 레스토랑(쉐브론 르네상스 내). 예약 가능","맛집","3240 Surfers Paradise Blvd, Surfers Paradise QLD"],["🏖️","Cavill Avenue","서퍼스 파라다이스 중심 보행 거리. 해변·상점·카페가 이어져요","관광","Cavill Ave, Surfers Paradise QLD"]],
+"마리나 미라지":[["☕","Tedder Avenue (Main Beach)","메인 비치의 카페·상점 거리. 마리나 미라지에서 가까워 커피 한 잔 하기 좋아요","관광","Tedder Ave, Main Beach QLD"]]},
+{"커럼빈 야생동물 보호구역":[["🏖️","Currumbin Beach","보호구역 가까운 해변. 일정 후 시간이 남을 때 가볍게 산책","관광","Currumbin Beach, Currumbin QLD"]],
+"버레이 헤즈 국립공원":[["🍽️","Rick Shores","해변 바로 앞 아시안 퓨전 레스토랑(오션 뷰). 예약 필수, 가격대 높음","맛집","43 Goodwin Terrace, Burleigh Heads QLD"],["🍟","Burleigh Pavilion","해변가 캐주얼 식당·바. 피시앤칩스·피자 등","맛집","43 Goodwin Terrace, Burleigh Heads QLD"],["🏖️","Burleigh Heads Beach","국립공원 바로 옆 해변. 해안 곶 산책과 함께 즐기기 좋아요","관광","Burleigh Heads Beach, Burleigh Heads QLD"]]},
+{}
 ];
+const VP={
+"블루마운틴 국립공원":"유칼립투스 숲에서 올라오는 푸른 안개가 '블루'의 비밀이에요. 먼 계곡과 절벽 능선을 겹쳐 담으면 깊이가 살아요",
+"에코 포인트":"세 자매봉을 정면으로 보는 대표 전망대. 난간 양끝이 사람이 적어 가족사진 찍기 좋고, 바람이 세니 모자는 꼭 고정하세요",
+"세 자매봉":"세 봉우리를 한 프레임에 넣고 사람은 한쪽에 세우면 스케일이 잘 보여요",
+"시닉 스카이웨이":"계곡 위를 건너는 케이블카. 창가에서 카툼바 폭포와 세 자매봉 방향을 함께 볼 수 있어요",
+"시닉 레일웨이":"세계에서 가장 가파른 편에 속하는 궤도열차. 출발 직전 내려다보는 경사가 하이라이트예요",
+"시닉 워크웨이":"울창한 우림 속 산책로. 초록 배경 가족사진과 이끼 낀 나무를 천천히 즐기기 좋아요",
+"시닉 케이블웨이":"절벽 위와 계곡 아래를 오가는 케이블카. 내려갈 땐 숲 지붕, 올라올 땐 절벽 전망이 좋아요",
+"로라 마을":"Leura Mall의 파스텔 톤 가게·카페 간판 앞이 사진 포인트예요. 천천히 걷기 좋은 골목 산책 코스",
+"포트스티븐스 자연체험":"모래언덕 능선에서 바다를 배경으로 점프샷! 해가 낮을수록 모래 결과 긴 그림자가 예뻐요. 폰·카메라는 모래 방지 파우치로",
+"머레이 와이너리":"포도밭·양조장 간판 앞이 포토 포인트예요. 점심 후 여유 있게 산책하기 좋아요",
+"돌핀 크루즈":"뱃머리·난간 쪽에서 돌고래를 기다리세요. 연속 촬영으로 점프 순간을 잡고, 물보라에 대비해 방수 파우치를 챙기세요",
+"하이드 파크":"가로수 길 중간의 아치볼드 분수가 포토 포인트예요. 대성당 방향으로 이어져 걷기 좋아요",
+"세인트 메리 대성당":"고딕 파사드는 계단 아래에서 광각으로 담고, 내부는 조용히 둘러보세요(단정한 복장)",
+"시드니 오페라 하우스 내부 투어":"내부에서 보는 조개껍질 지붕 구조와 창 너머 하버 풍경이 하이라이트예요. 촬영 규정은 가이드 안내를 따르세요",
+"오페라 하우스":"계단 앞에서는 지붕 타일 패턴을 가까이, 서큘러키 쪽에서는 하버브리지와 함께 멀리서 한 프레임으로 담아보세요",
+"시드니 하버 브릿지":"오페라하우스와 한 프레임에 담는 게 정석이에요. 서큘러키나 더 록스 쪽 부두에서 찍으면 깔끔해요",
+"시드니 천문대 공원":"언덕 위 잔디에서 하버브리지를 배경으로 한 인생샷. 해 질 무렵엔 노을과 함께 담기 좋아요",
+"하버프론트 레스토랑":"창가 자리에서 하버브리지와 오페라하우스가 함께 보여요",
+"더 록스":"붉은 사암 골목과 오래된 펍 거리. 하버브리지 아래 부두 쪽으로 걸으면 분위기가 좋아요",
+"시드니 야경 투어":"Dawes Point에서 하버브리지 야경, 밀슨스 포인트에서 오페라하우스와 시티 라이트를 담아보세요. 밤바람이 차요",
+"포인트 데인저":"주(州) 경계에 있는 곶 전망대예요. 서핑 해변과 파도가 부서지는 곶 풍경이 포인트",
+"열대과일 농장":"과일 시식과 농장 둘러보기. 나무에 달린 열대과일 앞이 사진 포인트예요",
+"서퍼스 파라다이스":"해변 모래 위에서 고층 빌딩 스카이라인과 서퍼를 한 프레임에 담아보세요",
+"마리나 미라지":"부두의 요트를 배경으로 한 가족사진이 잘 나와요",
+"골드코스트 헬기투어":"창에 렌즈를 바짝 붙이면 반사가 줄어요. 해안선과 스카이라인이 한눈에 보이니 짧게 여러 장 찍으세요",
+"스카이포인트":"Q1 전망대에서 해안선을 360°로 볼 수 있어요. 렌즈를 유리에 밀착하고, 맑은 날 오전이나 노을 무렵이 좋아요",
+"커럼빈 야생동물 보호구역":"코알라·캥거루를 가까이서 만나요. 먹이주기 등 프로그램 시간표는 입장할 때 확인하세요",
+"버레이 헤즈 국립공원":"해안 곶 산책로에서 서퍼스 파라다이스 스카이라인과 해안선이 이어져 보여요",
+"샴페인 크루즈":"소버린 아일랜드의 대저택과 요트 풍경을 감상하세요. 낮 시간이라 선글라스·모자가 필요해요"
+};
+const STK={"Incheon International Airport":"인천공항","Sydney Airport":"시드니 공항","Oaks Sydney North Ryde Suites":"호텔","Blue Mountains National Park":"블루마운틴 국립공원","Echo Point, Katoomba NSW":"에코 포인트","Palais Royale Boutique Hotel Katoomba":"팔레 로얄 레스토랑","Scenic World, Katoomba NSW":"시닉월드","Leura NSW":"로라 마을","Port Stephens NSW":"모래언덕","Murray's Brewery Port Stephens":"머레이 와이너리","Nelson Bay NSW":"넬슨 베이","Hyde Park Sydney":"하이드 파크","St Mary's Cathedral Sydney":"세인트 메리 대성당","Sydney Opera House":"오페라 하우스","Sydney Harbour Bridge":"하버 브릿지","Sydney Observatory":"천문대 공원","Harbourfront Seafood Restaurant The Rocks Sydney":"하버프론트 레스토랑","The Rocks Sydney":"더 록스","Gold Coast Airport":"골드코스트 공항","Point Danger Coolangatta":"포인트 데인저","Tropical Fruit World":"열대과일농장","Surfers Paradise QLD":"서퍼스 파라다이스","Marina Mirage Gold Coast":"마리나 미라지","SkyPoint Gold Coast":"스카이포인트","Rydges Gold Coast Airport":"호텔","Currumbin Wildlife Sanctuary":"커럼빈","Burleigh Heads National Park":"버레이 헤즈","Brisbane Airport":"브리즈번 공항"};
+const GEO=(()=>{try{return JSON.parse(localStorage.getItem("geo")||"{}")}catch(e){return{}}})();let geoQ=Promise.resolve();
+function geocode(name,addr){let k=name+"|"+addr;if(GEO[k])return Promise.resolve(GEO[k]);geoQ=geoQ.then(()=>new Promise(r=>setTimeout(r,1100))).then(()=>fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(name+", "+addr)).then(r=>r.json()).then(d=>{if(d[0]){GEO[k]=[+d[0].lat,+d[0].lon];try{localStorage.setItem("geo",JSON.stringify(GEO))}catch(e){}return GEO[k]}return null}).catch(()=>null));return geoQ}
+const hv=(a,b)=>{let t=x=>x*Math.PI/180,dl=t(b[0]-a[0]),dn=t(b[1]-a[1]),h=Math.sin(dl/2)**2+Math.cos(t(a[0]))*Math.cos(t(b[0]))*Math.sin(dn/2)**2;return 12742*Math.asin(Math.sqrt(h))},nearBy=(c,pts)=>pts.some(p=>hv(c,p)<20);
 
 const PH={
 "인천(ICN) 출발":["Incheon International Airport"],
@@ -154,17 +171,24 @@ const km=m=>m<1000?Math.round(m/10)*10+"m":(m/1000).toFixed(m<10000?1:0)+"km";
 const mins=s=>{let m=Math.max(1,Math.round(s/60));return m<60?m+"분":Math.floor(m/60)+"시간"+(m%60?" "+m%60+"분":"")};
 function hydrateMaps(){document.querySelectorAll(".rmap:not([data-d])").forEach(el=>{if(!el.offsetWidth)return;el.dataset.d=1;let i=el.dataset.i,pts=ROUTES[i].stops.map(x=>XY[x]).filter(Boolean),box=el.closest(".routebox");
 let m=null;if(window.L){m=L.map(el,{zoomControl:false,dragging:false,touchZoom:false,doubleClickZoom:false,scrollWheelZoom:false,boxZoom:false,keyboard:false,tap:false});L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(m);el._m=m;m.fitBounds(pts,{padding:[26,26]});pts.forEach((a,k)=>L.marker(a,{icon:L.divIcon({className:"pinw",html:`<div class="pin">${k+1}</div>`,iconSize:[22,22],iconAnchor:[11,11]}),interactive:false}).addTo(m))}
-loadRoute(i).then(r=>{el.classList.remove("loading");if(!r){if(m)L.polyline(pts,{color:"#2563eb",weight:3,dashArray:"6 6"}).addTo(m);let sm=box.querySelector(".rsum");if(sm)sm.textContent=ROUTES[i].air||"실제 도로 경로를 불러오지 못해 직선으로 표시했어요. 아래 'Google 지도에서 경로'를 이용하세요.";return}
+loadRoute(i).then(r=>{el.classList.remove("loading");if(!r){if(m)L.polyline(pts,{color:"#2563eb",weight:3,dashArray:"6 6"}).addTo(m);let sm=box.querySelector(".rsum");if(sm)sm.textContent=ROUTES[i].air||"실제 도로 경로를 불러오지 못해 직선으로 표시했어요. 아래 'Google 지도에서 경로'를 이용하세요.";if(ROUTES[i].air)box.querySelectorAll(".leg").forEach(x=>x.textContent="✈️ "+x.dataset.p+" → 항공 이동");return}
 if(m){let pl=L.polyline(r.line,{color:"#2563eb",weight:5,opacity:.85}).addTo(m);m.fitBounds(pl.getBounds(),{padding:[26,26]})}
 box.querySelector(".rsum").textContent=`총 ${km(r.dist)} · ${r.foot?"도보":"차량"} 약 ${mins(r.dur)} (예상, 교통·정차 제외)`;
-box.querySelectorAll(".leg").forEach(x=>{let l=r.legs[+x.dataset.l];if(l)x.textContent=`↓ ${km(l[0])} · ${r.foot?"도보":"차량"} 약 ${mins(l[1])}`})})})}
+box.querySelectorAll(".leg").forEach(x=>{let l=r.legs[+x.dataset.l];if(l)x.textContent=`${r.foot?"🚶":"🚗"} ${x.dataset.p}에서 ${km(l[0])} · ${r.foot?"도보":"차량"} 약 ${mins(l[1])}`})})})}
 function mapToggle(b){let m=b.closest(".routebox").querySelector(".rmap")._m;if(!m)return;let on=b.dataset.on!=="1";b.dataset.on=on?"1":"0";["dragging","touchZoom","doubleClickZoom"].forEach(h=>on?m[h].enable():m[h].disable());b.textContent=on?"🔒 지도 고정":"🔍 지도 확대/이동"}
 const map=q=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 function dayIndex(){let k=new Intl.DateTimeFormat("en-CA",{timeZone:"Australia/Sydney",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());let n=Math.round((Date.parse(k)-Date.parse(START))/864e5);return n>=0&&n<D.length?n:0}
 function eventHTML(s){let [t,n,d,q]=s.split("|"),k=n.replace(/^[^가-힣A-Za-z]+/,"");return `<div class="event"><div class="time">${t||"일정"}</div><h3>${n}</h3><p>${d}</p>${PH[k]?`<div class="ph loading" data-k="${k}"></div>`:""}${q?`<a class="btn" target="_blank" href="${map(q)}">🗺️ 지도</a>`:""}</div>`}
-function schedule(i=dayIndex()){let route=ROUTES[i],recs=RECS[i];document.getElementById("schedule").innerHTML=`<div class="pills">${D.map((x,j)=>`<button class="pill ${i==j?"active":""}" onclick="schedule(${j})">${j+1}일차</button>`).join("")}</div><div class="hero"><div class="label">DAY ${i+1}</div><h2>${D[i][0]}</h2><div class="muted">${D[i][1]}</div></div><div class="card"><h3>🗺️ 오늘 이동 코스</h3>${routeCard(route)}</div><div class="card"><h3>📋 패키지 일정</h3>${D[i][2].map(eventHTML).join("")}</div><div class="card"><h3>📍 일정 주변 추천</h3><div class="recs">${recs.map(recHTML).join("")}</div><p class="note">추천 장소는 패키지 일정에 포함되지 않을 수 있습니다. 실제 방문 가능 여부는 당일 자유시간·교통·영업시간을 확인하세요.</p></div>`}
-function routeCard(r){let directions=`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(r.from)}&destination=${encodeURIComponent(r.to)}&waypoints=${r.stops.slice(1,-1).map(encodeURIComponent).join("|")}&travelmode=driving`;return `<div class="routebox"><div class="routehead"><h3>${r.title}</h3><a class="routebtn" target="_blank" href="${directions}">Google 지도에서 경로</a></div><div class="rmap loading" data-i="${ROUTES.indexOf(r)}"></div><div class="rsum"></div><button class="btn" onclick="mapToggle(this)">🔍 지도 확대/이동</button><div class="route-line">${r.stops.map((x,i)=>`<div class="stop"><span class="dot"></span><b>${i+1}. ${x}</b>${i<r.stops.length-1?`<small class="leg" data-l="${i}">↓ 다음 일정지로 이동</small>`:"<small>도착</small>"}${SP[x]?`<div class="ph loading" data-k="${SP[x]}"></div>`:""}</div>`).join("")}</div><p class="note">${r.note}</p></div>`}
-function recHTML(r){return `<div class="rec"><div class="emoji">${r[0]}</div><div><h4>${r[1]}</h4><span class="tag">${r[3]}</span><p>${r[2]}</p><a target="_blank" href="${map(r[4])}">📍 지도에서 보기</a></div></div>`}
+function schedule(i=dayIndex()){document.getElementById("schedule").innerHTML=`<div class="pills">${D.map((x,j)=>`<button class="pill ${i==j?"active":""}" onclick="schedule(${j})">${j+1}일차</button>`).join("")}</div><div class="hero"><div class="label">DAY ${i+1}</div><h2>${D[i][0]}</h2><div class="muted">${D[i][1]}</div></div><div class="card"><h3>🗺️ 오늘 코스 · 패키지 일정</h3>${courseHTML(i)}</div><div class="alert">📸 뷰포인트·📍 근처 추천은 패키지 일정에 포함되지 않을 수 있어요. 실제 방문은 자유시간·교통·영업시간을 확인하세요.</div>`}
+function routeTop(r){let i=ROUTES.indexOf(r),directions=`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(r.from)}&destination=${encodeURIComponent(r.to)}&waypoints=${r.stops.slice(1,-1).map(encodeURIComponent).join("|")}&travelmode=driving`,has=Object.values(NR[i]||{}).length>0;return `<div class="routehead"><h3>${r.title}</h3><a class="routebtn" target="_blank" href="${directions}">Google 지도에서 경로</a></div><div class="rmap loading" data-i="${i}"></div><div class="rsum"></div><button class="btn" onclick="mapToggle(this)">🔍 지도 확대/이동</button>${has?`<button class="btn" onclick="recToggle(this)">📍 주변 추천 지도에 표시</button>`:""}`}
+function routeCard(r){return `<div class="routebox">${routeTop(r)}<p class="note">${r.note}</p></div>`}
+function nearHTML(i,k){let a=(NR[i]||{})[k];if(!a)return"";return `<details class="near"><summary>📍 근처 맛집·관광 ${a.length}곳</summary>${a.map(r=>`<div class="nr"><div class="e">${r[0]}</div><div><b>${r[1]}</b> <span class="tag">${r[3]}</span><p>${r[2]}</p><a target="_blank" href="${map(r[1]+" "+r[4])}">📍 지도에서 보기</a></div></div>`).join("")}</details>`}
+function evHTML(s,l,p,i){let [t,n,d,q]=s.split("|"),k=n.replace(/^[^가-힣A-Za-z]+/,"");return `<div class="event">${l>=0?`<small class="leg" data-l="${l}" data-p="${p}"></small>`:""}<div class="time">${t||"일정"}</div><h3>${n}</h3><p>${d}</p>${VP[k]?`<p class="vp">📸 ${VP[k]}</p>`:""}${PH[k]?`<div class="ph loading" data-k="${k}"></div>`:""}${q?`<a class="btn" target="_blank" href="${map(q)}">🗺️ 지도</a>`:""}${nearHTML(i,k)}</div>`}
+function courseHTML(i){let r=ROUTES[i],j=0,items=D[i][2].map(s=>{let q=s.split("|")[3],idx=-1;if(q){idx=r.stops.indexOf(q,j);if(idx>=0)j=idx+1}return evHTML(s,idx>=1?idx-1:-1,idx>=1?(STK[r.stops[idx-1]]||r.stops[idx-1]):"",i)}).join("");return `<div class="routebox">${routeTop(r)}${items}<p class="note">${r.note}</p></div>`}
+function recToggle(b){let box=b.closest(".routebox"),el=box.querySelector(".rmap"),m=el._m;if(!m)return;let i=el.dataset.i;if(el._rl){m.removeLayer(el._rl);el._rl=null;b.textContent="📍 주변 추천 지도에 표시";return}
+let g=L.layerGroup().addTo(m);el._rl=g;b.textContent="⏳ 위치 찾는 중…";let items=Object.values(NR[i]||{}).flat(),pts=ROUTES[i].stops.map(x=>XY[x]).filter(Boolean),done=0,cs=[];
+items.forEach(r=>geocode(r[1],r[4]).then(c=>{done++;if(c&&el._rl===g&&nearBy(c,pts)){cs.push(c);L.marker(c,{icon:L.divIcon({className:"pinw",html:`<div class="rpin ${r[3]==="맛집"?"":"s"}">${r[0]}</div>`,iconSize:[26,26],iconAnchor:[13,13]})}).bindPopup(`<b>${r[1]}</b><br>${r[3]}<br><a target="_blank" href="${map(r[1]+" "+r[4])}">Google 지도</a>`).addTo(g)}
+if(done===items.length&&el._rl===g){b.textContent=cs.length?"✅ 주변 추천 표시 중 (다시 누르면 숨김)":"⚠️ 위치를 찾지 못했어요 (목록의 지도 버튼을 이용하세요)";if(cs.length)m.fitBounds(pts.concat(cs),{padding:[26,26]})}}))}
 const WB=[[28,"🥵","매우 더움","반팔·반바지·린넨 소재","선글라스·모자·선크림, 물 자주 마시기"],[23,"😎","따뜻함","반팔 + 가벼운 바지","저녁용 얇은 겉옷 하나"],[18,"🙂","선선함","긴팔 티 + 얇은 가디건/셔츠","아침·저녁엔 겉옷 필수"],[13,"🧥","쌀쌀함","니트·맨투맨 + 바람막이/얇은 재킷","긴바지, 바람 부는 곳은 목 보호"],[8,"🧣","추움","두꺼운 니트·플리스 + 재킷","목도리·얇은 장갑 챙기기"],[-99,"🥶","매우 추움","패딩·두꺼운 코트 + 내복","장갑·비니·목도리"]],WR=["28° 이상","23~27°","18~22°","13~17°","8~12°","7° 이하"];
 function wear(mx,mn,rain){let b=WB.find(x=>mx>=x[0]),t=[b[3],b[4]];if(mx-mn>=10)t.push("일교차 큼 → 벗고 입기 쉬운 겹쳐입기");if(rain>=40)t.push("☔ 우산·방수 재킷, 젖어도 되는 신발");return[b[1],b[2],t]}
 function wearHTML(a,di,full){let rows=a.map(([n,d])=>{let k=Math.min(di,d.daily.time.length-1),mx=Math.round(d.daily.temperature_2m_max[k]),mn=Math.round(d.daily.temperature_2m_min[k]),[e,l,t]=wear(mx,mn,d.daily.precipitation_probability_max[k]??0);return `<div class="r"><b>${n} · ${mn}~${mx}°</b> <span>${e} ${l}</span><small>${t.join(" · ")}</small></div>`}).join("");
@@ -271,7 +295,7 @@ function resetSet(){setStart(DEF_START)}
 
 function home(){let i=dayIndex(),x=D[i];document.getElementById("home").innerHTML=`<div class="hero"><div class="label">TODAY · DAY ${i+1}</div><h2>${x[0]}</h2><div class="muted">${x[1]} · ${x[2].length}개 일정</div><button class="btn primary" onclick="show('schedule')">오늘 일정 보기</button><button class="btn" onclick="show('map')">오늘 지도</button></div><div class="grid"><div class="mini"><small>여행 기간</small><b>7일</b></div><div class="mini"><small>현재 지역</small><b>${i<4?"Sydney":"Gold Coast"}</b></div></div><div class="card">${x[2].slice(0,6).map(eventHTML).join("")}</div><div class="section-title"></div><div class="card"><h3>🌤 오늘 날씨</h3><div id="hw">불러오는 중…</div></div><div class="alert">패키지 실제 시간·호텔·식사·선택관광은 현지 사정에 따라 변경될 수 있습니다. 하나투어 최종 안내를 우선하세요.</div>`;weather("hw")}
 function mapView(){let i=dayIndex();let all=D.flatMap(x=>x[2].map(s=>s.split("|")).filter(a=>a[3]).map(a=>[a[1],a[2],a[3]]));document.getElementById("map").innerHTML=`<div class="hero"><div class="label">MAP</div><h2>일정별 이동 코스</h2><p class="muted">오늘 코스를 먼저 보여주고, 다른 날짜도 바로 선택할 수 있습니다.</p><div class="pills">${D.map((x,j)=>`<button class="pill ${i==j?"active":""}" onclick="mapDay(${j})">${j+1}일</button>`).join("")}</div></div><div id="mapday"></div><div class="card"><h3>🔎 전체 주요 장소</h3><input class="search" placeholder="장소 검색" oninput="this.parentNode.querySelectorAll('.place').forEach(x=>x.style.display=x.innerText.toLowerCase().includes(this.value.toLowerCase())?'flex':'none')">${all.map(a=>`<div class="place"><div>📍</div><div><b>${a[0].replace(/^[^가-힣A-Za-z]+/,"")}</b><small>${a[1]}</small><a class="btn" target="_blank" href="${map(a[2])}">지도 열기</a></div></div>`).join("")}</div>`;mapDay(i)}
-function mapDay(i){let el=document.getElementById("mapday");if(!el)return;el.innerHTML=`<div class="card"><div class="label">DAY ${i+1} · ${D[i][1]}</div>${routeCard(ROUTES[i])}<div class="section-title"></div><h3>📍 주변 추천</h3><div class="recs">${RECS[i].map(recHTML).join("")}</div></div>`}
+function mapDay(i){let el=document.getElementById("mapday");if(!el)return;el.innerHTML=`<div class="card"><div class="label">DAY ${i+1} · ${D[i][1]}</div>${routeCard(ROUTES[i])}</div>`}
 function pkgHTML(){const d=n=>md(addD(START,n));return `<div class="card"><h3>📋 패키지 확정 정보</h3><p class="pk">✈️ <b>${d(0)}</b> 19:10 인천 출발 KE0401 → <b>${d(1)}</b> 07:20 시드니 도착<br>✈️ <b>${d(4)}</b> 09:20 시드니 출발 VA 511 → 09:40 골드코스트 도착<br>✈️ <b>${d(6)}</b> 08:40 브리즈번 출발 KE0408 → 17:45 인천 도착</p><p class="pk">🏨 2~4일차(3박) 오크스 시드니 노스 라이드 스위트 4성급<br>🏨 5~6일차(2박) 리지 골드 코스트 에어포트 4성급<br>(1일차는 기내, 7일차는 숙박 없음)</p><p class="pk">🍽️ 특식: 2일차 중식 팔레 로얄 부티크 호텔 레스토랑(양식) · 4일차 중식 하버프론트 레스토랑 · 5일차 중식 열대과일농장 BBQ · 6일차 석식 스테이크<br>5일차 조식은 콜드밀박스(스낵·음료)</p><p class="pk">🛍️ 쇼핑센터 총 3회: 4일차 2회 · 6일차 1회 (각 약 1시간)</p><p class="pk">🎟️ 포함: 시닉월드 4종(스카이웨이·레일웨이·워크웨이·케이블웨이) · 오페라하우스 내부 투어 · 골드코스트 헬기투어(스페셜 포함)</p><p class="pk">💰 선택관광(상품가 불포함, 미참여 불이익 없음)<br>· 시드니 야경 투어 70AUD (${d(3)}, 약 2시간, 4명 이상, 우천 취소 가능)<br>· 골드코스트 샴페인 크루즈 70AUD (${d(5)}, 약 1시간, 8명 이상, 우천 취소 가능)<br>출발 7일 미만 시점의 사전 신청은 현지 확정이 아니라서, 도착 후 가이드에게 확인하세요.</p><small>하나투어 최종 일정 기준 · 현지 사정에 따라 변경될 수 있어요</small></div>`}
 function info(){document.getElementById("info").innerHTML=`<div class="hero"><div class="label">TRAVEL INFO</div><h2>여행정보</h2></div>${pkgHTML()}<div class="card"><h3>🚨 긴급전화</h3><p><b>000</b> 경찰 · 구급차 · 소방</p><p>휴대전화에서는 112로도 Triple Zero operator에 연결할 수 있습니다.</p><small>Tourism Australia 공식 안내</small></div><div class="card"><h3>🇰🇷 대한민국 총영사관</h3><p><b>시드니</b><br>Level 10, 44 Market Street, Sydney NSW 2000<br>+61 2 9210 0200</p><p><b>퀸즐랜드</b><br>Level 1, 102 Adelaide Street, Brisbane QLD<br>07 3221 1440</p><small>Australian Government DFAT 공식 정보</small></div><div class="card"><h3>🎒 준비물</h3>${["여권","여행자보험","호주용 어댑터","보조배터리","상비약","편한 신발","우천 대비품","선글라스/모자","해외사용 카드","eSIM/로밍"].map((x,i)=>`<label class="check"><input id="c${i}" type="checkbox" onchange="save()"> ${x}</label>`).join("")}</div><div class="alert">호주 해변에서는 가능하면 순찰 해변을 이용하고 빨간색·노란색 깃발 구역에서 수영하세요.</div>`;document.querySelectorAll("[id^=c]").forEach(x=>x.checked=localStorage.getItem(x.id)==="1")}
 function save(){document.querySelectorAll("[id^=c]").forEach(x=>localStorage.setItem(x.id,x.checked?"1":"0"))}
